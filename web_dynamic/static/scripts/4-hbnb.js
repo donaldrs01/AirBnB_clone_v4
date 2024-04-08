@@ -1,5 +1,5 @@
 $(document).ready(checkAmenities);
- const ogAmenities = {};
+const ogAmenities = {};
 
 function placesData () {
     $.ajax({
