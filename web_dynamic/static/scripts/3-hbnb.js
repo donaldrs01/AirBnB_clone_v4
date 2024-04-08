@@ -1,6 +1,6 @@
 function placesData () {
   $.ajax({
-    url: `http://${window.location.hostname}:5001/api/v1/places_search/`,
+    url: `http://localhost:5001/api/v1/places_search/`,
     type: 'POST',
     contentType: 'application/json',
     dataType: 'json',
@@ -39,7 +39,7 @@ function placesData () {
 }
 
 function vacantRoom () {
-    const apiURL = 'http://0.0.0.0:5001/api/v1/status/';
+    const apiURL = 'http://localhost:5001/api/v1/status/';
     $.get(apiURL, function (data, textStatus) {
       if (textStatus === 'success' && data.status === 'OK') {
         $('div#api_status').addClass('available');
@@ -49,15 +49,26 @@ function vacantRoom () {
     });
 }
 
-$('document').ready(function () {
+$(document).ready(function () {
+  // Initialize object/dictionary 'amenities' to store amenities
   const amenities = {};
-  $('input[type="checkbox]').change(function () {
-    if ($(this).is(':checked')) {
-      amenities[$(this).attr('id')] = $(this).attr('name');
+
+  // Listen for checkbox input changes
+  $('input[type="checkbox"]').change(function () {
+    // Retrieve amenityID and amenityName from the checkbox 'ID' attribute
+    const amenityID = $(this).data('id');
+    const amenityName = $(this).data('name');
+    // If checked:
+    if (this.checked) {
+      // Attach amenityID to its corresponding name
+      amenities[amenityID] = amenityName;
     } else {
-      delete amenities[$(this).attr('id')];
+      delete amenities[amenityID]; // Remove ID from object
     }
-    $('.amenities h4').text(Object.values(amenities).join(', '));
+    // Add amenityNames that are stored in dict into single string
+    const updatedAmenities = Object.values(amenities).join(', ');
+    // Updates all h4 elements associated with amenities
+    $('.amenities h4').text(updatedAmenities);
   });
 
   vacantRoom();
