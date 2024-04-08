@@ -42,15 +42,15 @@ function placesData () {
     });
 }
 
-  function vacantRoom () {
-    const apiURL = `http://localhost:5001/api/v1/status/`;
-    $.get(apiURL, function (data, textStatus) {
-      if (textStatus === 'success' && data.status === 'OK') {
-        $('div#api_status').addClass('available');
-      } else {
-        $('div#api_status').removeClass('available');
-      }
-    });
+function vacantRoom () {
+  const apiURL = `http://localhost:5001/api/v1/status/`;
+  $.get(apiURL, function (data, textStatus) {
+    if (textStatus === 'success' && data.status === 'OK') {
+      $('div#api_status').addClass('available');
+    } else {
+      $('div#api_status').removeClass('available');
+    }
+  });
 }
 
 
