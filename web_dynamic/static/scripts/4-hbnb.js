@@ -33,6 +33,22 @@ $(document).ready(function() {
       $('.amenities h4').text(updatedAmenities);
     });
   }
+  
+  // Loads all place data when page loads
+  function placesData() {
+    $.ajax({
+      url: 'http://localhost:5001/api/v1/places_search',
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: 'json',
+      // Send empty JSON object to be populated
+      data: JSON.stringify({}),
+      success: function (data) {
+        // Return place data
+        displaySearch(data);
+      }
+    });
+  }
 
    /* Triggered when search button is clicked
    Receives list of selected amenities, sends POST request to API,
@@ -89,22 +105,6 @@ $(document).ready(function() {
         </article>`);
       }
     }
-  
-  // Loads all place data when page loads
-  function placesData() {
-    $.ajax({
-      url: 'http://localhost:5001/api/v1/places_search',
-      type: 'POST',
-      contentType: 'application/json',
-      dataType: 'json',
-      // Send empty JSON object to be populated
-      data: JSON.stringify({}),
-      success: function (data) {
-        // Return place data
-        displaySearch(data);
-      }
-    });
-  }
 
   vacantRoom(); // Checks API status
   placesData(); // Load all place data
