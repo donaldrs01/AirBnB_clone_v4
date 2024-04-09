@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // Stores selected amenities
   const ogAmenities = {};
 
   function vacantRoom () {
@@ -32,7 +33,9 @@ $(document).ready(function() {
     });
   }
   
+  // Displays search results
   function displaySearch(data) {
+    // Clears any previous search results
     $('.places').empty();
     for (const place of data) {
       $('section.places').append(`<article>
@@ -61,10 +64,14 @@ $(document).ready(function() {
         </article>`);
       }
     }
-
+  
+  /* Triggered when search button is clicked
+   Receives list of selected amenities, sends POST request to API,
+   and then displays the filtered results */
   function searchAmenities() {
     // Attach click event listener to search button
     $('#search').click(function() {
+      // Store checked amenities in amenitiesList
       const amenitiesList = Object.keys(ogAmenities);
       // Make POST request to places_search with list of checked amenities
       $.ajax({
@@ -73,27 +80,30 @@ $(document).ready(function() {
         contentType: 'application/json',
         data: JSON.stringify({ amenities: amenitiesList }),
         success: function(data) {
+          // Display filtered results
           displaySearch(data);
         }
       });
     });
   }
-
+  // Loads all place data when page loads
   function placesData() {
     $.ajax({
       url: 'http://localhost:5001/api/v1/places_search',
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
+      // Send empty JSON object to be populated
       data: JSON.stringify({}),
       success: function (data) {
+        // Return place data
         displaySearch(data);
       }
     });
   }
 
-  vacantRoom();
-  checkAmenities();
-  placesData();
-  searchAmenities();
+  vacantRoom(); // Checks API status
+  checkAmenities(); // listens for amenities that are checked/unchecked
+  placesData(); // Load all place data
+  searchAmenities(); // Listens for search button click and loads checked amenities
 });
