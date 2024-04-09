@@ -1,7 +1,8 @@
 $(document).ready(function() {
   // Stores selected amenities
   const ogAmenities = {};
-
+  
+  // Check API status through api_status element
   function vacantRoom () {
     const apiURL = `http://localhost:5001/api/v1/status/`;
     $.get(apiURL, function (data, textStatus) {
@@ -32,11 +33,35 @@ $(document).ready(function() {
       $('.amenities h4').text(updatedAmenities);
     });
   }
+
+   /* Triggered when search button is clicked
+   Receives list of selected amenities, sends POST request to API,
+   and then displays the filtered results */
+   function searchAmenities() {
+    // Attach click event listener to search button
+    $('#search').click(function() {
+      // Store checked amenities in amenitiesList
+      const amenitiesList = Object.keys(ogAmenities);
+      // Make POST request to places_search with list of checked amenities
+      $.ajax({
+        type: 'POST',
+        url: 'http://localhost:5001/api/v1/places_search',
+        contentType: 'application/json',
+        data: JSON.stringify({ amenities: amenitiesList }),
+        success: function(data) {
+          // Display filtered results using displaySearch function
+          displaySearch(data);
+        }
+      });
+    });
+  }
   
   // Displays search results
   function displaySearch(data) {
     // Clears any previous search results
     $('.places').empty();
+    /* Iterates through list of places retrieved from search
+    Provides HTML instructions for how places displayed on page */
     for (const place of data) {
       $('section.places').append(`<article>
         <div class="title_box">
@@ -65,27 +90,6 @@ $(document).ready(function() {
       }
     }
   
-  /* Triggered when search button is clicked
-   Receives list of selected amenities, sends POST request to API,
-   and then displays the filtered results */
-  function searchAmenities() {
-    // Attach click event listener to search button
-    $('#search').click(function() {
-      // Store checked amenities in amenitiesList
-      const amenitiesList = Object.keys(ogAmenities);
-      // Make POST request to places_search with list of checked amenities
-      $.ajax({
-        type: 'POST',
-        url: 'http://localhost:5001/api/v1/places_search',
-        contentType: 'application/json',
-        data: JSON.stringify({ amenities: amenitiesList }),
-        success: function(data) {
-          // Display filtered results
-          displaySearch(data);
-        }
-      });
-    });
-  }
   // Loads all place data when page loads
   function placesData() {
     $.ajax({
@@ -103,7 +107,7 @@ $(document).ready(function() {
   }
 
   vacantRoom(); // Checks API status
-  checkAmenities(); // listens for amenities that are checked/unchecked
   placesData(); // Load all place data
+  checkAmenities(); // listens for amenities that are checked/unchecked
   searchAmenities(); // Listens for search button click and loads checked amenities
 });
